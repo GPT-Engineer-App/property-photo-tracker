@@ -12,21 +12,25 @@ const Index = () => {
     setIsLoggedIn(true);
   };
 
-  const handleUpload = (event) => {
+  const handleUpload = async (event) => {
     const files = Array.from(event.target.files);
     // Simulating grouped analysis for each batch of images
-    const analysisResult = "Full analysis of the images for each detected room.";
+    // Assuming the analysis is asynchronous and takes some time
+    const analysisResult = await simulateImageAnalysis(files);
     const newPhotosBatch = {
       urls: files.map((file) => URL.createObjectURL(file)),
       analysis: analysisResult,
     };
     setPhotos((prevPhotos) => [...prevPhotos, newPhotosBatch]);
-    toast({
-      title: "Analysis complete",
-      description: "The AI has completed the analysis of your photos.",
-      status: "success",
-      duration: 5000,
-      isClosable: true,
+  };
+
+  // Simulate the AI analysis process
+  const simulateImageAnalysis = (files) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const analysisResult = "Full analysis of the images for each detected room.";
+        resolve(analysisResult);
+      }, 2000); // Simulate a network request with a 2 second delay
     });
   };
 
