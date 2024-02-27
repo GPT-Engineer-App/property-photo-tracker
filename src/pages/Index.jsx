@@ -14,16 +14,16 @@ const Index = () => {
 
   const handleUpload = (event) => {
     const files = Array.from(event.target.files);
-    // TODO: Handle actual file upload and integrate with backend API
-    // Assuming the backend returns an object with the URL and analysis for each photo
-    const newPhotos = files.map((file) => ({
-      url: URL.createObjectURL(file),
-      analysis: "Pending analysis...", // This will be updated once the actual analysis is done
-    }));
-    setPhotos((prevPhotos) => [...prevPhotos, ...newPhotos]);
+    // Simulating grouped analysis for each batch of images
+    const analysisResult = "Full analysis of the images for each detected room.";
+    const newPhotosBatch = {
+      urls: files.map((file) => URL.createObjectURL(file)),
+      analysis: analysisResult,
+    };
+    setPhotos((prevPhotos) => [...prevPhotos, newPhotosBatch]);
     toast({
-      title: "Photos uploaded",
-      description: "We've uploaded your photos for analysis!",
+      title: "Analysis complete",
+      description: "The AI has completed the analysis of your photos.",
       status: "success",
       duration: 5000,
       isClosable: true,
@@ -62,18 +62,21 @@ const Index = () => {
               {photos.length === 0 ? (
                 <Text>No photos uploaded yet.</Text>
               ) : (
-                photos.map((photo, index) => (
-                  <ListItem key={index} p={3} boxShadow="md" borderRadius="md" bg="gray.50">
-                    <Flex align="center" justify="space-between">
-                      <Image boxSize="100px" src={photo.url} alt={`Photo ${index + 1}`} />
-                      <Text flex="1" ml={4}>
-                        {photo.analysis}
-                      </Text>
-                      <Button leftIcon={<FaTrashAlt />} colorScheme="red" onClick={() => handleDelete(index)}>
-                        Delete
-                      </Button>
+                photos.map((batch, index) => (
+                  <Box key={index} p={3} boxShadow="md" borderRadius="md" bg="gray.50" mb={4}>
+                    <Heading size="sm" mb={2}>
+                      Analysis {index + 1}
+                    </Heading>
+                    <Text mb={4}>{batch.analysis}</Text>
+                    <Flex justify="space-between" wrap="wrap">
+                      {batch.urls.map((url, urlIndex) => (
+                        <Image key={urlIndex} boxSize="100px" src={url} alt={`Photo ${urlIndex + 1}`} m={1} />
+                      ))}
                     </Flex>
-                  </ListItem>
+                    <Button leftIcon={<FaTrashAlt />} colorScheme="red" mt={3} onClick={() => handleDelete(index)}>
+                      Delete Batch
+                    </Button>
+                  </Box>
                 ))
               )}
             </List>
