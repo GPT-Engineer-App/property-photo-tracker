@@ -12,11 +12,18 @@ const Index = () => {
     setIsLoggedIn(true);
   };
 
-  const handleUpload = () => {
+  const handleUpload = (event) => {
+    const files = Array.from(event.target.files);
     // TODO: Handle actual file upload and integrate with backend API
+    // Assuming the backend returns an object with the URL and analysis for each photo
+    const newPhotos = files.map((file) => ({
+      url: URL.createObjectURL(file),
+      analysis: "Pending analysis...", // This will be updated once the actual analysis is done
+    }));
+    setPhotos((prevPhotos) => [...prevPhotos, ...newPhotos]);
     toast({
-      title: "Photo uploaded",
-      description: "We've uploaded your photo for analysis!",
+      title: "Photos uploaded",
+      description: "We've uploaded your photos for analysis!",
       status: "success",
       duration: 5000,
       isClosable: true,
@@ -42,7 +49,7 @@ const Index = () => {
         <Stack spacing={4}>
           <FormControl>
             <FormLabel htmlFor="photo-upload">Upload a Photo</FormLabel>
-            <Input type="file" id="photo-upload" accept="image/*" onChange={handleUpload} />
+            <Input type="file" id="photo-upload" accept="image/*" onChange={(e) => handleUpload(e)} multiple />
             <Button leftIcon={<FaUpload />} colorScheme="blue" mt={2} onClick={handleUpload}>
               Upload
             </Button>
